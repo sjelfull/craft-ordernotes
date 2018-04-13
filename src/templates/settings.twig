@@ -1,0 +1,53 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Order Notes plugin for Craft CMS 3.x
+ *
+ * Order Notes Settings.twig
+ *
+ * @author    Superbig
+ * @copyright Copyright (c) 2018 Superbig
+ * @link      https://superbig.co
+ * @package   OrderNotes
+ * @since     2.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+<h2>Notify Email Settings</h2>
+
+{{ forms.textField({
+    label: "Email Sender Address" | t,
+    instructions: "By default, the system email will be used." | t,
+    name: 'notifyEmailFrom',
+    value: settings.notifyEmailFrom,
+}) }}
+
+{{ forms.textField({
+    label: "Email Sender Name" | t,
+    instructions: "By default, the system sender name will be used." | t,
+    name: 'notifyEmailFromName',
+    value: settings.notifyEmailFromName,
+}) }}
+
+ {{ forms.textField({
+     label: "Email Template" | t,
+     instructions: "The template to use when notifying the customer" | t,
+     name: 'notifyEmailTemplate',
+     value: settings.notifyEmailTemplate,
+ }) }}
+
+ {{ forms.textField({
+     label: "Email Text Template" | t,
+     instructions: "Alternative template to use for the text version of the email" | t,
+     name: 'notifyEmailTemplateText',
+     value: settings.notifyEmailTemplateText,
+ }) }}
+
+ {{ forms.textField({
+     label: "Email Subject" | t,
+     instructions: "What subject to use for the notification email" | t,
+     name: 'notifyEmailSubject',
+     value: settings.notifyEmailSubject,
+ }) }}

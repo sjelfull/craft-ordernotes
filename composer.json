@@ -1,0 +1,43 @@
+{
+    "name": "superbig/craft-ordernotes",
+    "description": "Order notes for Commerce",
+    "type": "craft-plugin",
+    "version": "2.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "order notes"
+    ],
+    "support": {
+        "docs": "https://github.com/sjelfull/craft-ordernotes/blob/master/README.md",
+        "issues": "https://github.com/sjelfull/craft-ordernotes/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Superbig",
+            "homepage": "https://superbig.co"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "superbig\\ordernotes\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Order Notes",
+        "handle": "order-notes",
+        "hasCpSettings": true,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/sjelfull/craft-ordernotes/master/CHANGELOG.md",
+        "components": {
+            "orderNotes": "superbig\\ordernotes\\services\\OrderNotesService"
+        },
+        "class": "superbig\\ordernotes\\OrderNotes"
+    }
+}

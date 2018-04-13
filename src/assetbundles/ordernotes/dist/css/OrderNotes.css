@@ -1,0 +1,19 @@
+/**
+ * Order Notes plugin for Craft CMS
+ *
+ * Order Notes CSS
+ *
+ * @author    Superbig
+ * @copyright Copyright (c) 2018 Superbig
+ * @link      https://superbig.co
+ * @package   OrderNotes
+ * @since     2.0.0
+ */
+.ordernotes-note {}
+.ordernotes-note:not(:first-child) {
+    margin-top: 15px;
+}
+
+.ordernotes-note p {
+    margin: 0;
+}
