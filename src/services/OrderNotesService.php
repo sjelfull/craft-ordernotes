@@ -97,7 +97,7 @@ class OrderNotesService extends Component
             return [
                 'date'     => $note->dateCreated,
                 'message'  => nl2br($note->message),
-                'notify'  => $note->notify,
+                'notify'   => $note->notify,
                 'username' => $note->getUsername(),
             ];
         }, $notes));
@@ -166,9 +166,6 @@ class OrderNotesService extends Component
         try {
             $address = $order->getBillingAddress();
             $subject = $templates->renderString($settings->notifyEmailSubject, $variables);
-            Craft::info('Email to: ' . $order->email . $address->getFullName(), __METHOD__);
-            Craft::info('Email from: ' . $fromName . $fromEmail, __METHOD__);
-
             $message = (new Message())
                 ->setFrom([$fromEmail => $fromName])
                 ->setReplyTo([$fromEmail => $fromName])
