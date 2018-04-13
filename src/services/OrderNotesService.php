@@ -96,7 +96,7 @@ class OrderNotesService extends Component
             // GET User
             return [
                 'date'     => $note->dateCreated,
-                'message'  => $note->message,
+                'message'  => nl2br($note->message),
                 'notify'  => $note->notify,
                 'username' => $note->getUsername(),
             ];

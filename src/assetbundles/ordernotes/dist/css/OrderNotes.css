@@ -17,3 +17,8 @@
 .ordernotes-note p {
     margin: 0;
 }
+
+.ordernotes-note .ordernotes-note__text {
+    line-height: 1.2;
+    margin-bottom: 5px;
+}

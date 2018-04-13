@@ -64,8 +64,8 @@ class OrderNotes {
 
         let noteOutput = '';
 
-        this._notes.map(note => {
-            noteOutput += '<div class="ordernotes-note"><p>' + note.message + '</p><p class="light">' + note.username + ' - ' + note.date + '</p>';
+        this._notes.map((note, index) => {
+            noteOutput += '<div class="ordernotes-note"><p class="ordernotes-note__text">' + note.message + '</p><p class="light">' + note.username + ' - ' + note.date + '</p>';
 
             if (note.notify) {
                 noteOutput += '<p class="light">Customer was notified</p>';
@@ -135,5 +135,13 @@ class OrderNotes {
         }
 
         return message;
+    }
+
+    _nl2br(str, isXhtml) {
+        // Adjust comment to avoid issue on locutus.io display
+        var breakTag = (isXhtml || typeof isXhtml === 'undefined') ? '<br ' + '/>' : '<br>'
+
+        return (str + '')
+            .replace(/(\r\n|\n\r|\r|\n)/g, breakTag + '$1')
     }
 }
