@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2018 Superbig
  */
 
-namespace superbig\ordernotes\assetbundles\OrderNotes;
+namespace superbig\ordernotes\assetbundles\ordernotes;
 
 use Craft;
 use craft\web\AssetBundle;
