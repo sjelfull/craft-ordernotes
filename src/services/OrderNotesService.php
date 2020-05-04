@@ -12,7 +12,7 @@ namespace superbig\ordernotes\services;
 
 use craft\commerce\elements\Order;
 use craft\mail\Message;
-use superbig\ordernotes\assetbundles\OrderNotes\OrderNotesAsset;
+use superbig\ordernotes\assetbundles\ordernotes\OrderNotesAsset;
 use superbig\ordernotes\models\OrderNotesModel;
 use superbig\ordernotes\OrderNotes;
 
