@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.2 - 2020-05-04
+### Fixed
+- Fixed deprecated namespace that warning in Composer ([#5](https://github.com/sjelfull/craft-ordernotes/pull/5))
+
 ## 2.0.1 - 2018-04-13
 ### Changed
 - Added newlines to note text
