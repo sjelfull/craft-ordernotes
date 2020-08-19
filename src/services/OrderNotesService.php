@@ -165,12 +165,18 @@ class OrderNotesService extends Component
 
         try {
             $address = $order->getBillingAddress();
+            if( method_exists($address,'getFullName') ){
+                //craft\commerce\models\Address::getFullName() removed as of commerce 3.0.0
+                $fullName = $address->getFullName();
+            } else {
+                $fullName = $address->fullName ? $address->fullName : $address->firstName.' '.$address->lastName;
+            }
             $subject = $templates->renderString($settings->notifyEmailSubject, $variables);
             $message = (new Message())
                 ->setFrom([$fromEmail => $fromName])
                 ->setReplyTo([$fromEmail => $fromName])
                 ->setSubject($subject)
-                ->setTo([$order->email => $address->getFullName()]);
+                ->setTo([$order->email => $fullName]);
 
 
         } catch (\Exception $e) {
