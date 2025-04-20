@@ -10,20 +10,17 @@
 
 namespace superbig\ordernotes;
 
-use craft\commerce\elements\Order;
-use craft\helpers\UrlHelper;
-use superbig\ordernotes\services\OrderNotesService as OrderNotesServiceService;
-use superbig\ordernotes\services\OrderNotesService;
-use superbig\ordernotes\variables\OrderNotesVariable;
-use superbig\ordernotes\models\Settings;
-
 use Craft;
 use craft\base\Plugin;
-use craft\services\Plugins;
+use craft\commerce\elements\Order;
 use craft\events\PluginEvent;
-use craft\web\UrlManager;
+use craft\helpers\UrlHelper;
+
+use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
-use craft\events\RegisterUrlRulesEvent;
+use superbig\ordernotes\models\Settings;
+use superbig\ordernotes\services\OrderNotesService;
+use superbig\ordernotes\variables\OrderNotesVariable;
 
 use yii\base\Event;
 

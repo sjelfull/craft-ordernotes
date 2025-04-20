@@ -25,6 +25,9 @@
         "craftcms/cms": "3.9.15",
         "craftcms/commerce": "3.4.25"
     },
+    "require-dev": {
+        "craftcms/ecs":"dev-main"
+    },
     "autoload": {
         "psr-4": {
           "superbig\\ordernotes\\": "src/"
@@ -40,5 +43,7 @@
             "orderNotes": "superbig\\ordernotes\\services\\OrderNotesService"
         },
         "class": "superbig\\ordernotes\\OrderNotes"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

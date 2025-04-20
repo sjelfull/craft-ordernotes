@@ -11,10 +11,9 @@
 namespace superbig\ordernotes\records;
 
 use craft\commerce\records\Order;
-use superbig\ordernotes\OrderNotes;
-
-use Craft;
 use craft\db\ActiveRecord;
+
+use superbig\ordernotes\OrderNotes;
 
 /**
  * @author    Superbig
