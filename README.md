@@ -1,12 +1,22 @@
-# Order Notes plugin for Craft CMS 3.x
+# Order Notes plugin for Craft CMS 3 and Craft Commerce 3.4.25
 
-Order notes for Commerce
+A simple plugin that adds notes to Craft Commerce orders. Team members can add notes directly to orders and optionally notify customers by email.
 
-![Screenshot](resources/img/plugin-logo.png)
+![Screenshot](resources/img/screenshot-plugin.png)
+
+# Key Features
+
+- Add, view, and track notes on any order
+- See who added each note and when
+- Optionally notify customers about notes via email
+- Customize email templates and sender information
+- Works with existing user permissions
+- Maintains a history of all order-related notes
+
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+This plugin requires Craft CMS 3.0.0 or later.
 
 ## Installation
 
