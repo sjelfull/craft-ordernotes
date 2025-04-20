@@ -16,6 +16,7 @@ jobs:
     name: ci
     uses: superbigco/.github/.github/workflows/ci.yml@master
     with:
+      craft_version: '3'
       php_version: '8.2'
       node_version: '20'
       jobs: '["ecs", "phpstan", "prettier"]'
