@@ -73,7 +73,7 @@ class OrderNotesService extends Component
         }, $notes);
     }
 
-    public function getCode(Order $order)
+    public function getCode(Order $order): void
     {
         Craft::$app->getView()->registerAssetBundle(OrderNotesAsset::class);
 

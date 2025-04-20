@@ -32,12 +32,6 @@ use craft\db\ActiveRecord;
  */
 class OrderNotesRecord extends ActiveRecord
 {
-    // Public Static Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
     public static function tableName()
     {
         return '{{%ordernotes}}';

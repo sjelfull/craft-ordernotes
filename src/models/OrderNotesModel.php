@@ -32,13 +32,7 @@ use superbig\ordernotes\records\OrderNotesRecord;
  */
 class OrderNotesModel extends Model
 {
-    // Private Properties
-    // =========================================================================
-
     private $_user;
-
-    // Public Properties
-    // =========================================================================
 
     public $id;
     public $userId;
@@ -64,12 +58,6 @@ class OrderNotesModel extends Model
         return $model;
     }
 
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @return UserModel
-     */
     public function getUser()
     {
         if (!$this->_user) {
@@ -79,17 +67,11 @@ class OrderNotesModel extends Model
         return $this->_user;
     }
 
-    /**
-     * @return string
-     */
     public function getUsername()
     {
         return $this->getUser()->username;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
