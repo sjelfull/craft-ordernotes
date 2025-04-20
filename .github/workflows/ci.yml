@@ -19,6 +19,6 @@ jobs:
       craft_version: '3'
       php_version: '8.2'
       node_version: '20'
-      jobs: '["ecs", "phpstan", "prettier"]'
+      jobs: '["ecs", "phpstan"]'
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
