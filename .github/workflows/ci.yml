@@ -14,7 +14,7 @@ concurrency:
 jobs:
   ci:
     name: ci
-    uses: superbigco/.github/.github/workflows/ci.yml@v3
+    uses: superbigco/.github/.github/workflows/ci.yml
     with:
       craft_version: '3'
       node_version: '20'
