@@ -2,12 +2,18 @@
     "name": "superbig/craft-ordernotes",
     "description": "Order notes for Commerce",
     "type": "craft-plugin",
-    "version": "3.0.0",
+    "scripts": {
+        "check-cs": "ecs check --ansi",
+        "fix-cs": "ecs check --ansi --fix",
+        "phpstan": "phpstan --memory-limit=1G"
+    },
     "keywords": [
         "craft",
         "cms",
         "craftcms",
         "craft-plugin",
+        "craft commerce",
+        "commerce",
         "order notes"
     ],
     "support": {
@@ -23,7 +29,8 @@
     ],
     "require": {
         "craftcms/cms": "3.9.15",
-        "craftcms/commerce": "3.4.25"
+        "craftcms/commerce": "3.4.25",
+        "php": "^8.2"
     },
     "require-dev": {
         "craftcms/ecs":"dev-main"
@@ -45,5 +52,14 @@
         "class": "superbig\\ordernotes\\OrderNotes"
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "config": {
+        "platform": {
+            "php": "8.2"
+        },
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true,
+            "craftcms/plugin-installer": true
+        }
+    }
 }

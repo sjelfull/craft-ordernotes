@@ -1,0 +1,23 @@
+name: ci
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - 'commerce-3'
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ci:
+    name: ci
+    uses: superbigco/.github/.github/workflows/ci.yml@v3
+    with:
+      craft_version: '3'
+      node_version: '20'
+      jobs: '["ecs", "phpstan", "prettier"]'
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
