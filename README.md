@@ -52,6 +52,60 @@ return [
 ];
 ```
 
+## Using Order Notes
+
+### Displaying notes in templates
+
+You can display order notes in your front-end templates using the `craft.orderNotes` variable.
+
+#### Get notes by Order object
+
+```twig
+{% set order = craft.commerce.orders.number('xxxxx').one() %}
+{% set notes = craft.orderNotes.getNotesForOrder(order) %}
+
+{% if notes %}
+    <h3>Order Notes</h3>
+    <ul>
+    {% for note in notes %}
+        <li>
+            <strong>{{ note.getUsername() }}</strong> - {{ note.dateCreated|date('Y-m-d H:i') }}<br>
+            {{ note.message|nl2br }}
+        </li>
+    {% endfor %}
+    </ul>
+{% endif %}
+```
+
+#### Get notes by order ID
+
+```twig
+{% set notes = craft.orderNotes.getNotesByOrderId(orderId) %}
+
+{% if notes %}
+    {% for note in notes %}
+        <div class="note">
+            <p>{{ note.message }}</p>
+            <small>By {{ note.getUsername() }} on {{ note.dateCreated|date('short') }}</small>
+        </div>
+    {% endfor %}
+{% endif %}
+```
+
+#### Available note properties
+
+Each note object has the following properties:
+
+- `note.id` - The note ID
+- `note.message` - The note message content
+- `note.userId` - The ID of the user who created the note
+- `note.orderId` - The associated order ID
+- `note.notify` - Whether the customer was notified (boolean)
+- `note.dateCreated` - When the note was created
+- `note.dateUpdated` - When the note was last updated
+- `note.getUser()` - Get the User object who created the note
+- `note.getUsername()` - Get the username of the user who created the note
+
 ## Order Notes Roadmap
 
 * Add file attachments
