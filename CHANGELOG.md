@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Fixed
+- Fixed order note timestamps to respect the user's configured timezone instead of displaying in UTC
+
 ## 2.0.4 - 2020-08-21
 ### Fixed
 - Fixed wrong Composer dependency constraint for Commerce ([#9](https://github.com/sjelfull/craft-ordernotes/pull/9))
