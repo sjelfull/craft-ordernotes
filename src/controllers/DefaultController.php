@@ -79,7 +79,7 @@ class DefaultController extends Controller
             'note'    => [
                 'message'     => $message,
                 'username'    => $note->getUsername(),
-                'dateCreated' => $note->dateCreated,
+                'dateCreated' => Craft::$app->getFormatter()->asDatetime($note->dateCreated, 'short'),
             ],
         ]);
     }
