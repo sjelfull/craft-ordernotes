@@ -61,7 +61,8 @@ You can display order notes in your front-end templates using the `craft.orderNo
 #### Get notes by Order object
 
 ```twig
-{% set order = craft.commerce.orders.number('xxxxx').one() %}
+{# Get order by number #}
+{% set order = craft.commerce.orders.number(orderNumber).one() %}
 {% set notes = craft.orderNotes.getNotesForOrder(order) %}
 
 {% if notes %}
@@ -80,6 +81,7 @@ You can display order notes in your front-end templates using the `craft.orderNo
 #### Get notes by order ID
 
 ```twig
+{# If you already have the order ID (e.g., from route parameters or order.id) #}
 {% set notes = craft.orderNotes.getNotesByOrderId(orderId) %}
 
 {% if notes %}
