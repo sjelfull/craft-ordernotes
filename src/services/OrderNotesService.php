@@ -95,7 +95,7 @@ class OrderNotesService extends Component
             $note) {
             // GET User
             return [
-                'date' => $note->dateCreated,
+                'date' => Craft::$app->getFormatter()->asDatetime($note->dateCreated, 'short'),
                 'message' => nl2br($note->message),
                 'notify' => $note->notify,
                 'username' => $note->getUsername(),
