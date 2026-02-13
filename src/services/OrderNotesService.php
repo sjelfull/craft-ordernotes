@@ -56,13 +56,15 @@ class OrderNotesService extends Component
         }, $records);
     }
 
-    public function getCode(Order $order): void
+    public function getCode(Order $order): string
     {
         Craft::$app->getView()->registerAssetBundle(OrderNotesAsset::class);
 
         $notes = $this->getNotesByOrderId($order->id);
 
         Craft::$app->getView()->registerJs('new OrderNotes(' . $order->id . ', ' . json_encode($this->formatOrderNotes($notes)) . ');');
+
+        return '';
     }
 
     public function formatOrderNotes(?array $notes = []): ?array

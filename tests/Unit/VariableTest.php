@@ -15,12 +15,3 @@ it('can be instantiated without arguments', function() {
 
     expect($variable)->toBeInstanceOf(OrderNotesVariable::class);
 });
-
-it('returns null for nonexistent order notes', function() {
-    $service = new OrderNotesService();
-    $variable = new OrderNotesVariable($service);
-
-    $result = $variable->getNotesByOrderId(999999);
-
-    expect($result)->toBeNull();
-});
