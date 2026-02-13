@@ -107,7 +107,7 @@ class OrderNotesService extends Component
     {
         try {
             if ($note->id) {
-                $record = $this->getNoteById($model->id);
+                $record = $this->getNoteById($note->id);
 
                 if (!$record) {
                     throw new \Exception(Craft::t('site', 'No note with id {id} was found!', ['id' => $note->id]));
@@ -134,7 +134,7 @@ class OrderNotesService extends Component
             $note->dateUpdated = $record->dateUpdated;
 
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->error('An error occured when saving note record: {error}',
                 [
                     'error' => $e->getMessage(),
@@ -194,7 +194,7 @@ class OrderNotesService extends Component
 
                 $message->setTextBody($text);
             }
-        } catch (ErrorException $e) {
+        } catch (exception $e) {
             $this->error('Error rendering email template {template}: {error}', [
                 'template' => $htmlTemplate,
                 'error' => $e->getMessage(),
