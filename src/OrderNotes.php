@@ -1,6 +1,6 @@
 <?php
 /**
- * Order Notes plugin for Craft CMS 3.x
+ * Order Notes plugin for Craft CMS 5.x
  *
  * Order notes for Commerce
  *
@@ -15,42 +15,39 @@ use craft\base\Plugin;
 use craft\commerce\elements\Order;
 use craft\events\PluginEvent;
 use craft\helpers\UrlHelper;
-
 use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
 use superbig\ordernotes\models\Settings;
 use superbig\ordernotes\services\OrderNotesService;
 use superbig\ordernotes\variables\OrderNotesVariable;
-
 use yii\base\Event;
 
 /**
- * Class OrderNotes
- *
  * @author    Superbig
  * @package   OrderNotes
  * @since     2.0.0
  *
  * @property  OrderNotesService $orderNotes
- * @method   Settings getSettings()
+ * @method    Settings getSettings()
  */
 class OrderNotes extends Plugin
 {
-    public static self $plugin;
-    public $schemaVersion = '2.0.0';
+    public string $schemaVersion = '2.0.0';
 
-    public function init()
+    public function init(): void
     {
         parent::init();
-        self::$plugin = $this;
+
+        $this->setComponents([
+            'orderNotes' => OrderNotesService::class,
+        ]);
 
         Craft::$app->getView()->hook('cp.commerce.order.edit', function(&$context) {
-            // dump($context, Craft::$app->getRequest()->getIsCpRequest());
             if (Craft::$app->getRequest()->getIsCpRequest()) {
                 /** @var Order $order */
                 $order = $context['order'];
 
-                return OrderNotes::$plugin->orderNotes->getCode($order);
+                return OrderNotes::getInstance()->orderNotes->getCode($order);
             }
         });
 
@@ -86,21 +83,12 @@ class OrderNotes extends Plugin
         );
     }
 
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): Settings
     {
         return new Settings();
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function settingsHtml(): string
+    protected function settingsHtml(): ?string
     {
         return Craft::$app->view->renderTemplate(
             'order-notes/settings',

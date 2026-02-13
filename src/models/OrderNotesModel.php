@@ -1,6 +1,6 @@
 <?php
 /**
- * Order Notes plugin for Craft CMS 3.x
+ * Order Notes plugin for Craft CMS 5.x
  *
  * Order notes for Commerce
  *
@@ -11,39 +11,29 @@
 namespace superbig\ordernotes\models;
 
 use Craft;
-
 use craft\base\Model;
-use superbig\ordernotes\OrderNotes;
+use craft\elements\User;
 use superbig\ordernotes\records\OrderNotesRecord;
 
 /**
  * @author    Superbig
  * @package   OrderNotes
  * @since     2.0.0
- *
- * @property string    $message
- * @property int       $id
- * @property int       $userId
- * @property int       $siteId
- * @property int       $orderId
- * @property bool      $notify
- * @property \DateTime $dateCreated
- * @property \DateTime $dateUpdated
  */
 class OrderNotesModel extends Model
 {
-    private $_user;
+    public ?int $id = null;
+    public ?int $userId = null;
+    public ?int $orderId = null;
+    public ?int $siteId = null;
+    public string $message = '';
+    public mixed $dateCreated = null;
+    public mixed $dateUpdated = null;
+    public bool $notify = false;
 
-    public $id;
-    public $userId;
-    public $orderId;
-    public $siteId;
-    public $message = '';
-    public $dateCreated;
-    public $dateUpdated;
-    public $notify = false;
+    private ?User $_user = null;
 
-    public static function create(OrderNotesRecord $record)
+    public static function create(OrderNotesRecord $record): self
     {
         $model = new self();
         $model->id = $record->id;
@@ -53,26 +43,28 @@ class OrderNotesModel extends Model
         $model->message = $record->message;
         $model->dateCreated = $record->dateCreated;
         $model->dateUpdated = $record->dateUpdated;
-        $model->notify = $record->notify;
+        $model->notify = (bool)$record->notify;
 
         return $model;
     }
 
-    public function getUser()
+    public function getUser(): ?User
     {
-        if (!$this->_user) {
+        if (!$this->_user && $this->userId) {
             $this->_user = Craft::$app->getUsers()->getUserById($this->userId);
         }
 
         return $this->_user;
     }
 
-    public function getUsername()
+    public function getUsername(): string
     {
-        return $this->getUser()->username;
+        $user = $this->getUser();
+
+        return $user?->username ?? '';
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             ['notify', 'boolean'],

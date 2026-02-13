@@ -1,6 +1,6 @@
 <?php
 /**
- * Order Notes plugin for Craft CMS 3.x
+ * Order Notes plugin for Craft CMS 5.x
  *
  * Order notes for Commerce
  *
@@ -11,11 +11,11 @@
 namespace superbig\ordernotes\controllers;
 
 use Craft;
-use craft\commerce\Plugin;
+use craft\commerce\Plugin as Commerce;
 use craft\web\Controller;
-
 use superbig\ordernotes\models\OrderNotesModel;
 use superbig\ordernotes\OrderNotes;
+use yii\web\Response;
 
 /**
  * @author    Superbig
@@ -24,31 +24,28 @@ use superbig\ordernotes\OrderNotes;
  */
 class DefaultController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
-    public function actionGetOrderNotes()
+    public function actionGetOrderNotes(): Response
     {
         $id = Craft::$app->getRequest()->getRequiredParam('orderId');
-        $order = Plugin::getInstance()->getOrders()->getOrderById($id);
+        $order = Commerce::getInstance()->getOrders()->getOrderById($id);
 
         if (!$order) {
-            throw new Exception(Craft::t('No order with id {id} found', ['id' => $id]), LogLevel::Error);
+            throw new \Exception(Craft::t('order-notes', 'No order with id {id} found', ['id' => $id]));
         }
 
-        $this->returnJson(OrderNotes::$plugin->orderNotes->getNotesByOrderId($id));
+        return $this->asJson(OrderNotes::getInstance()->orderNotes->getNotesByOrderId($id));
     }
 
-    public function actionAddNote()
+    public function actionAddNote(): Response
     {
         $request = Craft::$app->getRequest();
         $orderId = $request->getRequiredParam('orderId');
         $message = $request->getRequiredParam('message');
         $notify = filter_var($request->getRequiredParam('notify'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-        $order = Plugin::getInstance()->getOrders()->getOrderById($orderId);
+        $order = Commerce::getInstance()->getOrders()->getOrderById($orderId);
 
         if (!$order) {
-            throw new \Exception(Craft::t('No order with id {id} found', ['id' => $orderId]), LogLevel::Error);
+            throw new \Exception(Craft::t('order-notes', 'No order with id {id} found', ['id' => $orderId]));
         }
 
         $note = new OrderNotesModel();
@@ -58,18 +55,15 @@ class DefaultController extends Controller
         $note->siteId = Craft::$app->getSites()->currentSite->id;
         $note->userId = Craft::$app->getUser()->getIdentity()->id;
 
-        if (!OrderNotes::$plugin->orderNotes->saveNote($note)) {
+        if (!OrderNotes::getInstance()->orderNotes->saveNote($note)) {
             return $this->asJson([
                 'success' => false,
-                'error' => Craft::t('Problem saving note: {error}', [
-                    'error' => 'Error',
-                    // $note->getErrors(),
-                ]),
+                'error' => Craft::t('order-notes', 'Problem saving note'),
             ]);
         }
 
         if ($note->notify) {
-            OrderNotes::$plugin->orderNotes->notifyCustomer($note, $order);
+            OrderNotes::getInstance()->orderNotes->notifyCustomer($note, $order);
         }
 
         return $this->asJson([

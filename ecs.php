@@ -12,5 +12,5 @@ return static function(ECSConfig $ecsConfig): void {
         __FILE__,
     ]);
 
-    $ecsConfig->sets([SetList::CRAFT_CMS_3]);
+    $ecsConfig->sets([SetList::CRAFT_CMS_4]);
 };
