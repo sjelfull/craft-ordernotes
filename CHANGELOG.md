@@ -1,12 +1,16 @@
-# Order Notes Changelog
+# Changelog
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
-
-## 3.0.0 - 2025-04-20
+## 3.0.0 - 2026-02-13
 ### Added
-- Added Commerce 3 support
+- Craft 5 + Commerce 5 support
+- Template usage documentation for front-end order notes display
+
+### Fixed
+- Order note timestamps now respect user's configured timezone
+
+### Changed
+- Requires Craft CMS 5.5+ and Commerce 5.0+
+- Requires PHP 8.2+
 
 ## 2.0.4 - 2020-08-21
 ### Fixed
