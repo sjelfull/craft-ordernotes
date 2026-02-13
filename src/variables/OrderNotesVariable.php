@@ -13,8 +13,6 @@ namespace superbig\ordernotes\variables;
 use craft\commerce\elements\Order;
 use superbig\ordernotes\OrderNotes;
 
-use Craft;
-
 /**
  * @author    Superbig
  * @package   OrderNotes

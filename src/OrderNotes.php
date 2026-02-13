@@ -10,19 +10,17 @@
 
 namespace superbig\ordernotes;
 
-use craft\helpers\UrlHelper;
-use superbig\ordernotes\services\OrderNotesService as OrderNotesServiceService;
-use superbig\ordernotes\services\OrderNotesService;
-use superbig\ordernotes\variables\OrderNotesVariable;
-use superbig\ordernotes\models\Settings;
-
 use Craft;
 use craft\base\Plugin;
-use craft\services\Plugins;
+use craft\commerce\elements\Order;
 use craft\events\PluginEvent;
-use craft\web\UrlManager;
+use craft\helpers\UrlHelper;
+
+use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
-use craft\events\RegisterUrlRulesEvent;
+use superbig\ordernotes\models\Settings;
+use superbig\ordernotes\services\OrderNotesService;
+use superbig\ordernotes\variables\OrderNotesVariable;
 
 use yii\base\Event;
 
@@ -38,39 +36,21 @@ use yii\base\Event;
  */
 class OrderNotes extends Plugin
 {
-    // Static Properties
-    // =========================================================================
-
-    /**
-     * @var OrderNotes
-     */
-    public static $plugin;
-
-    // Public Properties
-    // =========================================================================
-
-    /**
-     * @var string
-     */
+    public static self $plugin;
     public $schemaVersion = '2.0.0';
 
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
     public function init()
     {
         parent::init();
         self::$plugin = $this;
 
         Craft::$app->getView()->hook('cp.commerce.order.edit', function(&$context) {
+            // dump($context, Craft::$app->getRequest()->getIsCpRequest());
             if (Craft::$app->getRequest()->getIsCpRequest()) {
+                /** @var Order $order */
                 $order = $context['order'];
-                $code  = OrderNotes::$plugin->orderNotes->getCode($order);
 
-                return $code;
+                return OrderNotes::$plugin->orderNotes->getCode($order);
             }
         });
 

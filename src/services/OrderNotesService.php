@@ -10,14 +10,14 @@
 
 namespace superbig\ordernotes\services;
 
+use Craft;
+use craft\base\Component;
 use craft\commerce\elements\Order;
 use craft\mail\Message;
 use superbig\ordernotes\assetbundles\ordernotes\OrderNotesAsset;
+
 use superbig\ordernotes\models\OrderNotesModel;
 use superbig\ordernotes\OrderNotes;
-
-use Craft;
-use craft\base\Component;
 use superbig\ordernotes\records\OrderNotesRecord;
 use yii\base\ErrorException;
 
@@ -45,7 +45,7 @@ class OrderNotesService extends Component
         }
 
         /** @var OrderNotesModel $note */
-        $note = (new OrderNotesModel)->setAttributes($package);
+        $note = (new OrderNotesModel())->setAttributes($package);
 
         return $note;
     }
@@ -73,7 +73,7 @@ class OrderNotesService extends Component
         }, $notes);
     }
 
-    public function getCode(Order $order)
+    public function getCode(Order $order): void
     {
         Craft::$app->getView()->registerAssetBundle(OrderNotesAsset::class);
 
@@ -95,9 +95,9 @@ class OrderNotesService extends Component
             $note) {
             // GET User
             return [
-                'date'     => $note->dateCreated,
-                'message'  => nl2br($note->message),
-                'notify'   => $note->notify,
+                'date' => $note->dateCreated,
+                'message' => nl2br($note->message),
+                'notify' => $note->notify,
                 'username' => $note->getUsername(),
             ];
         }, $notes));
@@ -107,21 +107,20 @@ class OrderNotesService extends Component
     {
         try {
             if ($note->id) {
-                $record = $this->getNoteById($model->id);
+                $record = $this->getNoteById($note->id);
 
                 if (!$record) {
                     throw new \Exception(Craft::t('site', 'No note with id {id} was found!', ['id' => $note->id]));
                 }
-            }
-            else {
+            } else {
                 $record = new OrderNotesRecord();
             }
 
             $record->message = $note->message;
-            $record->userId  = $note->userId;
+            $record->userId = $note->userId;
             $record->orderId = $note->orderId;
-            $record->siteId  = $note->siteId;
-            $record->notify  = $note->notify;
+            $record->siteId = $note->siteId;
+            $record->notify = $note->notify;
 
             if (!$record->save()) {
                 $this->error('An error occured when saving note record: {error}',
@@ -130,12 +129,12 @@ class OrderNotesService extends Component
                     ]);
             }
 
-            $note->id          = $record->id;
+            $note->id = $record->id;
             $note->dateCreated = $record->dateCreated;
             $note->dateUpdated = $record->dateUpdated;
 
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->error('An error occured when saving note record: {error}',
                 [
                     'error' => $e->getMessage(),
@@ -147,15 +146,15 @@ class OrderNotesService extends Component
 
     public function notifyCustomer(OrderNotesModel $note, Order $order)
     {
-        $templates      = Craft::$app->getView();
-        $mailer         = Craft::$app->getMailer();
+        $templates = Craft::$app->getView();
+        $mailer = Craft::$app->getMailer();
         $systemSettings = Craft::$app->systemSettings;
-        $settings       = OrderNotes::$plugin->getSettings();
-        $htmlTemplate   = $settings->notifyEmailTemplate;
-        $textTemplate   = $settings->notifyEmailTemplateText;
-        $fromEmail      = !empty($settings->notifyEmailFrom) ? $settings->notifyEmailFrom : $systemSettings->getSetting('email', 'fromEmail');
-        $fromName       = !empty($settings->notifyEmailFromName) ? $settings->notifyEmailFromName : $systemSettings->getSetting('email', 'fromName');
-        $variables      = ['order' => $order, 'note' => $note];
+        $settings = OrderNotes::$plugin->getSettings();
+        $htmlTemplate = $settings->notifyEmailTemplate;
+        $textTemplate = $settings->notifyEmailTemplateText;
+        $fromEmail = !empty($settings->notifyEmailFrom) ? $settings->notifyEmailFrom : $systemSettings->getSetting('email', 'fromEmail');
+        $fromName = !empty($settings->notifyEmailFromName) ? $settings->notifyEmailFromName : $systemSettings->getSetting('email', 'fromName');
+        $variables = ['order' => $order, 'note' => $note];
 
         if (empty($htmlTemplate)) {
             $this->error('No email template set. Customer could not be notified');
@@ -165,11 +164,11 @@ class OrderNotesService extends Component
 
         try {
             $address = $order->getBillingAddress();
-            if( method_exists($address,'getFullName') ){
+            if (method_exists($address,'getFullName')) {
                 //craft\commerce\models\Address::getFullName() removed as of commerce 3.0.0
                 $fullName = $address->getFullName();
             } else {
-                $fullName = $address->fullName ? $address->fullName : $address->firstName.' '.$address->lastName;
+                $fullName = $address->fullName ? $address->fullName : $address->firstName . ' ' . $address->lastName;
             }
             $subject = $templates->renderString($settings->notifyEmailSubject, $variables);
             $message = (new Message())
@@ -177,8 +176,6 @@ class OrderNotesService extends Component
                 ->setReplyTo([$fromEmail => $fromName])
                 ->setSubject($subject)
                 ->setTo([$order->email => $fullName]);
-
-
         } catch (\Exception $e) {
             $this->error('Exception: {error}', ['error' => $e->getMessage()]);
 
@@ -196,12 +193,11 @@ class OrderNotesService extends Component
                 $text = $templates->renderTemplate($textTemplate, ['note' => $note, 'order' => $order]);
 
                 $message->setTextBody($text);
-
             }
-        } catch (ErrorException $e) {
+        } catch (exception $e) {
             $this->error('Error rendering email template {template}: {error}', [
                 'template' => $htmlTemplate,
-                'error'    => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
         }
 

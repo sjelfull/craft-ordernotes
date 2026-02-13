@@ -10,10 +10,9 @@
 
 namespace superbig\ordernotes\models;
 
-use superbig\ordernotes\OrderNotes;
-
-use Craft;
 use craft\base\Model;
+
+use superbig\ordernotes\OrderNotes;
 
 /**
  * @author    Superbig
@@ -28,28 +27,9 @@ use craft\base\Model;
  */
 class Settings extends Model
 {
-    // Public Properties
-    // =========================================================================
-
-    /**
-     * @var string
-     */
-    public $notifyEmailFrom         = '';
-    public $notifyEmailFromName     = '';
-    public $notifyEmailTemplate     = '';
+    public $notifyEmailFrom = '';
+    public $notifyEmailFromName = '';
+    public $notifyEmailTemplate = '';
     public $notifyEmailTemplateText = '';
-    public $notifyEmailSubject      = '';
-
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            //['someAttribute', 'string'],
-        ];
-    }
+    public $notifyEmailSubject = '';
 }

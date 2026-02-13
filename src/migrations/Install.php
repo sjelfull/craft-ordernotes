@@ -10,11 +10,11 @@
 
 namespace superbig\ordernotes\migrations;
 
-use superbig\ordernotes\OrderNotes;
-
 use Craft;
+
 use craft\config\DbConfig;
 use craft\db\Migration;
+use superbig\ordernotes\OrderNotes;
 
 /**
  * @author    Superbig
@@ -23,22 +23,9 @@ use craft\db\Migration;
  */
 class Install extends Migration
 {
-    // Public Properties
-    // =========================================================================
-
-    /**
-     * @var string The database driver to use
-     */
     public $driver;
-
     protected $tableName = '{{%ordernotes}}';
 
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
     public function safeUp()
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
@@ -53,9 +40,6 @@ class Install extends Migration
         return true;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function safeDown()
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
@@ -63,9 +47,6 @@ class Install extends Migration
 
         return true;
     }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @return bool
@@ -80,15 +61,15 @@ class Install extends Migration
             $this->createTable(
                 $this->tableName,
                 [
-                    'id'          => $this->primaryKey(),
+                    'id' => $this->primaryKey(),
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
-                    'uid'         => $this->uid(),
-                    'siteId'      => $this->integer()->notNull(),
-                    'userId'      => $this->integer()->null(),
-                    'orderId'     => $this->integer()->notNull(),
-                    'message'     => $this->text()->notNull(),
-                    'notify'     => $this->boolean()->defaultValue(0),
+                    'uid' => $this->uid(),
+                    'siteId' => $this->integer()->notNull(),
+                    'userId' => $this->integer()->null(),
+                    'orderId' => $this->integer()->notNull(),
+                    'message' => $this->text()->notNull(),
+                    'notify' => $this->boolean()->defaultValue(0),
                 ]
             );
         }

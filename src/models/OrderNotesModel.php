@@ -10,10 +10,10 @@
 
 namespace superbig\ordernotes\models;
 
-use superbig\ordernotes\OrderNotes;
-
 use Craft;
+
 use craft\base\Model;
+use superbig\ordernotes\OrderNotes;
 use superbig\ordernotes\records\OrderNotesRecord;
 
 /**
@@ -32,13 +32,7 @@ use superbig\ordernotes\records\OrderNotesRecord;
  */
 class OrderNotesModel extends Model
 {
-    // Private Properties
-    // =========================================================================
-
     private $_user;
-
-    // Public Properties
-    // =========================================================================
 
     public $id;
     public $userId;
@@ -47,29 +41,23 @@ class OrderNotesModel extends Model
     public $message = '';
     public $dateCreated;
     public $dateUpdated;
-    public $notify  = false;
+    public $notify = false;
 
     public static function create(OrderNotesRecord $record)
     {
-        $model              = new self();
-        $model->id          = $record->id;
-        $model->siteId      = $record->siteId;
-        $model->orderId     = $record->orderId;
-        $model->userId      = $record->userId;
-        $model->message     = $record->message;
+        $model = new self();
+        $model->id = $record->id;
+        $model->siteId = $record->siteId;
+        $model->orderId = $record->orderId;
+        $model->userId = $record->userId;
+        $model->message = $record->message;
         $model->dateCreated = $record->dateCreated;
         $model->dateUpdated = $record->dateUpdated;
-        $model->notify      = $record->notify;
+        $model->notify = $record->notify;
 
         return $model;
     }
 
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @return UserModel
-     */
     public function getUser()
     {
         if (!$this->_user) {
@@ -79,17 +67,11 @@ class OrderNotesModel extends Model
         return $this->_user;
     }
 
-    /**
-     * @return string
-     */
     public function getUsername()
     {
         return $this->getUser()->username;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [

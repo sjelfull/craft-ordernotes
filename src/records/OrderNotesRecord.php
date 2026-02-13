@@ -11,10 +11,9 @@
 namespace superbig\ordernotes\records;
 
 use craft\commerce\records\Order;
-use superbig\ordernotes\OrderNotes;
-
-use Craft;
 use craft\db\ActiveRecord;
+
+use superbig\ordernotes\OrderNotes;
 
 /**
  * @author    Superbig
@@ -32,12 +31,6 @@ use craft\db\ActiveRecord;
  */
 class OrderNotesRecord extends ActiveRecord
 {
-    // Public Static Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
     public static function tableName()
     {
         return '{{%ordernotes}}';
