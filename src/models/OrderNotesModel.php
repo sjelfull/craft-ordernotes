@@ -1,6 +1,6 @@
 <?php
 /**
- * Order Notes plugin for Craft CMS 3.x
+ * Order Notes plugin for Craft CMS 5.x
  *
  * Order notes for Commerce
  *
@@ -10,87 +10,61 @@
 
 namespace superbig\ordernotes\models;
 
-use superbig\ordernotes\OrderNotes;
-
 use Craft;
 use craft\base\Model;
+use craft\elements\User;
 use superbig\ordernotes\records\OrderNotesRecord;
 
 /**
  * @author    Superbig
  * @package   OrderNotes
  * @since     2.0.0
- *
- * @property string    $message
- * @property int       $id
- * @property int       $userId
- * @property int       $siteId
- * @property int       $orderId
- * @property bool      $notify
- * @property \DateTime $dateCreated
- * @property \DateTime $dateUpdated
  */
 class OrderNotesModel extends Model
 {
-    // Private Properties
-    // =========================================================================
+    public ?int $id = null;
+    public ?int $userId = null;
+    public ?int $orderId = null;
+    public ?int $siteId = null;
+    public string $message = '';
+    public mixed $dateCreated = null;
+    public mixed $dateUpdated = null;
+    public bool $notify = false;
 
-    private $_user;
+    private ?User $_user = null;
 
-    // Public Properties
-    // =========================================================================
-
-    public $id;
-    public $userId;
-    public $orderId;
-    public $siteId;
-    public $message = '';
-    public $dateCreated;
-    public $dateUpdated;
-    public $notify  = false;
-
-    public static function create(OrderNotesRecord $record)
+    public static function create(OrderNotesRecord $record): self
     {
-        $model              = new self();
-        $model->id          = $record->id;
-        $model->siteId      = $record->siteId;
-        $model->orderId     = $record->orderId;
-        $model->userId      = $record->userId;
-        $model->message     = $record->message;
+        $model = new self();
+        $model->id = $record->id;
+        $model->siteId = $record->siteId;
+        $model->orderId = $record->orderId;
+        $model->userId = $record->userId;
+        $model->message = $record->message;
         $model->dateCreated = $record->dateCreated;
         $model->dateUpdated = $record->dateUpdated;
-        $model->notify      = $record->notify;
+        $model->notify = (bool)$record->notify;
 
         return $model;
     }
 
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @return UserModel
-     */
-    public function getUser()
+    public function getUser(): ?User
     {
-        if (!$this->_user) {
+        if (!$this->_user && $this->userId) {
             $this->_user = Craft::$app->getUsers()->getUserById($this->userId);
         }
 
         return $this->_user;
     }
 
-    /**
-     * @return string
-     */
-    public function getUsername()
+    public function getUsername(): string
     {
-        return $this->getUser()->username;
+        $user = $this->getUser();
+
+        return $user?->username ?? '';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             ['notify', 'boolean'],

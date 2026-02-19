@@ -1,0 +1,156 @@
+name: ci
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - craft5
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Tests (${{ matrix.db.name }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        db:
+          - name: MySQL
+            driver: mysql
+            server: mysql
+            port: 3306
+            image: mysql:8
+          - name: Postgres
+            driver: pgsql
+            server: postgres
+            port: 5432
+            image: postgres:16
+
+    services:
+      mysql:
+        image: ${{ matrix.db.driver == 'mysql' && 'mysql:8' || '' }}
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: pest
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost -u root -proot"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+      postgres:
+        image: ${{ matrix.db.driver == 'pgsql' && 'postgres:16' || '' }}
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: root
+          POSTGRES_DB: pest
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U root -d pest"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      CRAFT_APP_ID: ordernotes-test
+      CRAFT_ENVIRONMENT: dev
+      CRAFT_SECURITY_KEY: test-security-key-not-for-production
+      CRAFT_DB_DRIVER: ${{ matrix.db.driver }}
+      CRAFT_DB_SERVER: 127.0.0.1
+      CRAFT_DB_PORT: ${{ matrix.db.port }}
+      CRAFT_DB_DATABASE: pest
+      CRAFT_DB_USER: root
+      CRAFT_DB_PASSWORD: root
+      CRAFT_DB_TABLE_PREFIX: craft_
+      CRAFT_TEMPLATES_PATH: ./tests/templates
+      CRAFT_TIMEZONE: UTC
+      CRAFT_OMIT_SCRIPT_NAME_IN_URLS: "true"
+      CRAFT_DEV_MODE: "true"
+      DEV_MODE: "true"
+      CRAFT_EXE_PATH: ./craft
+      PRIMARY_SITE_URL: http://localhost:8080
+      CRAFT_ALLOW_SUPERUSER: 1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: ctype,curl,dom,iconv,intl,json,mbstring,openssl,pcre,pdo,pdo_mysql,pdo_pgsql,reflection,spl,zip,gd
+          ini-values: post_max_size=256M, max_execution_time=180, memory_limit=512M
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Configure Composer plugins
+        run: |
+          composer config --no-plugins allow-plugins.yiisoft/yii2-composer true
+          composer config --no-plugins allow-plugins.craftcms/plugin-installer true
+          composer config --no-plugins allow-plugins.pestphp/pest-plugin true
+
+      - name: Install dependencies
+        run: composer require "craftcms/cms:^5.5" "craftcms/commerce:^5.0" "markhuot/craft-pest-core:^3.0" --prefer-dist --no-progress --no-interaction --with-all-dependencies
+
+      - name: Copy config files
+        run: |
+          mkdir -p ./storage ./config/project ./tests/templates
+          cp -r ./vendor/markhuot/craft-pest-core/stubs/config/app.php ./config/app.php
+          cp -r ./vendor/markhuot/craft-pest-core/stubs/config/general.php ./config/general.php
+
+      - name: Run tests
+        run: ./vendor/bin/pest
+
+  code-analysis:
+    name: Code Analysis (${{ matrix.command.name }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        command:
+          - name: PHPStan
+            run: composer phpstan
+          - name: Coding Standards
+            run: composer check-cs
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: ctype,curl,dom,iconv,intl,json,mbstring,openssl,pcre,pdo,reflection,spl,zip
+          ini-values: post_max_size=256M, max_execution_time=180, memory_limit=512M
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run ${{ matrix.command.name }}
+        run: ${{ matrix.command.run }}

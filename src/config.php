@@ -1,6 +1,6 @@
 <?php
 /**
- * Order Notes plugin for Craft CMS 3.x
+ * Order Notes plugin for Craft CMS 5.x
  *
  * Order notes for Commerce
  *
@@ -24,17 +24,17 @@
 
 return [
     // Sender Email Address
-    'notifyEmailFrom'         => '',
+    'notifyEmailFrom' => '',
 
     // Sender Name
-    'notifyEmailFromName'     => '',
+    'notifyEmailFromName' => '',
 
     // HTML email template - will receive order and note as variables
-    'notifyEmailTemplate'     => '',
+    'notifyEmailTemplate' => '',
 
     // Text email template (defaults to HTML if not set) - will receive order and note as variables
     'notifyEmailTemplateText' => '',
 
     // Email subject - will receive order and note as variables
-    'notifyEmailSubject'      => '',
+    'notifyEmailSubject' => '',
 ];

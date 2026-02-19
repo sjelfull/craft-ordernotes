@@ -1,6 +1,6 @@
 <?php
 /**
- * Order Notes plugin for Craft CMS 3.x
+ * Order Notes plugin for Craft CMS 5.x
  *
  * Order notes for Commerce
  *
@@ -10,11 +10,8 @@
 
 namespace superbig\ordernotes\records;
 
-use craft\commerce\records\Order;
-use superbig\ordernotes\OrderNotes;
-
-use Craft;
 use craft\db\ActiveRecord;
+use yii\db\ActiveQueryInterface;
 
 /**
  * @author    Superbig
@@ -32,24 +29,18 @@ use craft\db\ActiveRecord;
  */
 class OrderNotesRecord extends ActiveRecord
 {
-    // Public Static Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%ordernotes}}';
     }
 
     public function user(): ActiveQueryInterface
     {
-        return $this->hasOne(User::class, ['id' => 'userId']);
+        return $this->hasOne(\craft\records\User::class, ['id' => 'userId']);
     }
 
     public function order(): ActiveQueryInterface
     {
-        return $this->hasOne(Order::class, ['id' => 'orderId']);
+        return $this->hasOne(\craft\commerce\records\Order::class, ['id' => 'orderId']);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Order Notes plugin for Craft CMS 3.x
+ * Order Notes plugin for Craft CMS 5.x
  *
  * Order notes for Commerce
  *
@@ -10,67 +10,44 @@
 
 namespace superbig\ordernotes;
 
-use craft\helpers\UrlHelper;
-use superbig\ordernotes\services\OrderNotesService as OrderNotesServiceService;
-use superbig\ordernotes\services\OrderNotesService;
-use superbig\ordernotes\variables\OrderNotesVariable;
-use superbig\ordernotes\models\Settings;
-
 use Craft;
 use craft\base\Plugin;
-use craft\services\Plugins;
+use craft\commerce\elements\Order;
 use craft\events\PluginEvent;
-use craft\web\UrlManager;
+use craft\helpers\UrlHelper;
+use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
-use craft\events\RegisterUrlRulesEvent;
-
+use superbig\ordernotes\models\Settings;
+use superbig\ordernotes\services\OrderNotesService;
+use superbig\ordernotes\variables\OrderNotesVariable;
 use yii\base\Event;
 
 /**
- * Class OrderNotes
- *
  * @author    Superbig
  * @package   OrderNotes
  * @since     2.0.0
  *
  * @property  OrderNotesService $orderNotes
- * @method   Settings getSettings()
+ * @method    Settings getSettings()
  */
 class OrderNotes extends Plugin
 {
-    // Static Properties
-    // =========================================================================
+    public string $schemaVersion = '2.0.0';
 
-    /**
-     * @var OrderNotes
-     */
-    public static $plugin;
-
-    // Public Properties
-    // =========================================================================
-
-    /**
-     * @var string
-     */
-    public $schemaVersion = '2.0.0';
-
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
+    public function init(): void
     {
         parent::init();
-        self::$plugin = $this;
+
+        $this->setComponents([
+            'orderNotes' => OrderNotesService::class,
+        ]);
 
         Craft::$app->getView()->hook('cp.commerce.order.edit', function(&$context) {
             if (Craft::$app->getRequest()->getIsCpRequest()) {
+                /** @var Order $order */
                 $order = $context['order'];
-                $code  = OrderNotes::$plugin->orderNotes->getCode($order);
 
-                return $code;
+                return OrderNotes::getInstance()->orderNotes->getCode($order);
             }
         });
 
@@ -106,21 +83,12 @@ class OrderNotes extends Plugin
         );
     }
 
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): Settings
     {
         return new Settings();
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function settingsHtml(): string
+    protected function settingsHtml(): ?string
     {
         return Craft::$app->view->renderTemplate(
             'order-notes/settings',

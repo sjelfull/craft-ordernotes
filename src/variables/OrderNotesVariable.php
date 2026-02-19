@@ -1,6 +1,6 @@
 <?php
 /**
- * Order Notes plugin for Craft CMS 3.x
+ * Order Notes plugin for Craft CMS 5.x
  *
  * Order notes for Commerce
  *
@@ -12,8 +12,7 @@ namespace superbig\ordernotes\variables;
 
 use craft\commerce\elements\Order;
 use superbig\ordernotes\OrderNotes;
-
-use Craft;
+use superbig\ordernotes\services\OrderNotesService;
 
 /**
  * @author    Superbig
@@ -22,26 +21,28 @@ use Craft;
  */
 class OrderNotesVariable
 {
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @param Order|null $order
-     *
-     * @return array|null
-     */
-    public function getNotesForOrder(Order $order = null)
+    public function __construct(private ?OrderNotesService $service = null)
     {
-        return OrderNotes::$plugin->orderNotes->getNotesByOrderId($order->id);
     }
 
     /**
-     * @param null $orderId
-     *
-     * @return array|null
+     * @return \superbig\ordernotes\models\OrderNotesModel[]|null
      */
-    public function getNotesByOrderId($orderId = null)
+    public function getNotesForOrder(Order $order): ?array
     {
-        return OrderNotes::$plugin->orderNotes->getNotesByOrderId($orderId);
+        return $this->getService()->getNotesByOrderId($order->id);
+    }
+
+    /**
+     * @return \superbig\ordernotes\models\OrderNotesModel[]|null
+     */
+    public function getNotesByOrderId(?int $orderId = null): ?array
+    {
+        return $this->getService()->getNotesByOrderId($orderId);
+    }
+
+    private function getService(): OrderNotesService
+    {
+        return $this->service ?? OrderNotes::getInstance()->orderNotes;
     }
 }

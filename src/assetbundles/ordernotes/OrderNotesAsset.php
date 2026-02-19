@@ -1,6 +1,6 @@
 <?php
 /**
- * Order Notes plugin for Craft CMS 3.x
+ * Order Notes plugin for Craft CMS 5.x
  *
  * Order notes for Commerce
  *
@@ -10,7 +10,6 @@
 
 namespace superbig\ordernotes\assetbundles\ordernotes;
 
-use Craft;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
@@ -21,13 +20,7 @@ use craft\web\assets\cp\CpAsset;
  */
 class OrderNotesAsset extends AssetBundle
 {
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
+    public function init(): void
     {
         $this->sourcePath = "@superbig/ordernotes/assetbundles/ordernotes/dist";
 

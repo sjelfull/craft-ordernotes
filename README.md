@@ -1,59 +1,99 @@
-# Order Notes plugin for Craft CMS 3.x
+# Order Notes for Craft Commerce
 
-Order notes for Commerce
+Add internal notes to Craft Commerce orders. Team members can annotate orders directly from the control panel and optionally notify customers by email.
 
-![Screenshot](resources/img/plugin-logo.png)
+![Screenshot](resources/img/screenshot-plugin.png)
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+- Craft CMS 5.5+
+- Craft Commerce 5.0+
+- PHP 8.2+
 
 ## Installation
 
-To install the plugin, follow these instructions.
+```bash
+composer require superbig/craft-ordernotes
+```
 
-1. Open your terminal and go to your Craft project:
+Then go to **Settings → Plugins** and install Order Notes.
 
-        cd /path/to/project
+## Quick Start
 
-2. Then tell Composer to load the plugin:
+Once installed, a notes panel appears on every Commerce order edit screen. Type a message, optionally check "Notify customer", and submit.
 
-        composer require superbig/craft-ordernotes
+## Using Order Notes in Templates
 
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Order Notes.
+Access order notes in Twig via the `craft.orderNotes` variable.
 
-## Order Notes Overview
+### Get notes by Order object
 
-The Order Notes plugin will add a section to the Commerce Order details view, where any users with access may add notes.
+```twig
+{% set order = craft.commerce.orders.number(orderNumber).one() %}
+{% set notes = craft.orderNotes.getNotesForOrder(order) %}
 
-## Configuring Order Notes
+{% if notes %}
+    <h3>Order Notes</h3>
+    {% for note in notes %}
+        <div class="note">
+            <strong>{{ note.getUsername() }}</strong>
+            <time>{{ note.dateCreated|date('Y-m-d H:i') }}</time>
+            <p>{{ note.message|nl2br }}</p>
+        </div>
+    {% endfor %}
+{% endif %}
+```
 
-Before using the plugin, you should update all the settings values.
+### Get notes by order ID
 
-Alternatively you can use the example config file to override the settings:
+```twig
+{% set notes = craft.orderNotes.getNotesByOrderId(order.id) %}
+```
+
+### Available properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `note.id` | `int` | Note ID |
+| `note.message` | `string` | Note content |
+| `note.orderId` | `int` | Associated order ID |
+| `note.userId` | `int` | Author's user ID |
+| `note.notify` | `bool` | Whether the customer was notified |
+| `note.dateCreated` | `DateTime` | When the note was created |
+| `note.dateUpdated` | `DateTime` | When the note was last updated |
+| `note.getUser()` | `User` | The User element who created the note |
+| `note.getUsername()` | `string` | Username of the note author |
+
+## Configuration
+
+Configure via the CP settings page or a `config/order-notes.php` file:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `notifyEmailFrom` | `string` | `''` | Sender email address (falls back to system email) |
+| `notifyEmailFromName` | `string` | `''` | Sender name (falls back to system name) |
+| `notifyEmailTemplate` | `string` | `''` | Path to HTML email template |
+| `notifyEmailTemplateText` | `string` | `''` | Path to plain text email template |
+| `notifyEmailSubject` | `string` | `''` | Email subject (Twig, receives `order` and `note`) |
+
+### Config file example
 
 ```php
 <?php
+
 return [
-    // Sender Email Address
-    'notifyEmailFrom'         => '',
-
-    // Sender Name
-    'notifyEmailFromName'     => '',
-
-    // HTML email template - will receive order and note as variables
-    'notifyEmailTemplate'     => '',
-
-    // Text email template (defaults to HTML if not set) - will receive order and note as variables
-    'notifyEmailTemplateText' => '',
-
-    // Email subject - will receive order and note as variables
-    'notifyEmailSubject'      => '',
+    'notifyEmailFrom' => '',
+    'notifyEmailFromName' => '',
+    'notifyEmailTemplate' => '_emails/order-note',
+    'notifyEmailTemplateText' => '_emails/order-note-text',
+    'notifyEmailSubject' => 'Update on your order {{ order.reference }}',
 ];
 ```
 
-## Order Notes Roadmap
+Email templates receive `order` (Commerce Order) and `note` (OrderNotesModel) as variables.
 
-* Add file attachments
+## Support
+
+- [GitHub Issues](https://github.com/sjelfull/craft-ordernotes/issues)
 
 Brought to you by [Superbig](https://superbig.co)

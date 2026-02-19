@@ -1,6 +1,6 @@
 <?php
 /**
- * Order Notes plugin for Craft CMS 3.x
+ * Order Notes plugin for Craft CMS 5.x
  *
  * Order notes for Commerce
  *
@@ -10,10 +10,7 @@
 
 namespace superbig\ordernotes\migrations;
 
-use superbig\ordernotes\OrderNotes;
-
 use Craft;
-use craft\config\DbConfig;
 use craft\db\Migration;
 
 /**
@@ -23,121 +20,72 @@ use craft\db\Migration;
  */
 class Install extends Migration
 {
-    // Public Properties
-    // =========================================================================
+    protected string $tableName = '{{%ordernotes}}';
 
-    /**
-     * @var string The database driver to use
-     */
-    public $driver;
-
-    protected $tableName = '{{%ordernotes}}';
-
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public function safeUp()
+    public function safeUp(): bool
     {
-        $this->driver = Craft::$app->getConfig()->getDb()->driver;
         if ($this->createTables()) {
             $this->createIndexes();
             $this->addForeignKeys();
-            // Refresh the db schema caches
             Craft::$app->db->schema->refresh();
-            $this->insertDefaultData();
         }
 
         return true;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function safeDown()
+    public function safeDown(): bool
     {
-        $this->driver = Craft::$app->getConfig()->getDb()->driver;
-        $this->removeTables();
+        $this->dropTableIfExists($this->tableName);
 
         return true;
     }
 
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * @return bool
-     */
-    protected function createTables()
+    protected function createTables(): bool
     {
-        $tablesCreated = false;
-
         $tableSchema = Craft::$app->db->schema->getTableSchema($this->tableName);
-        if ($tableSchema === null) {
-            $tablesCreated = true;
-            $this->createTable(
-                $this->tableName,
-                [
-                    'id'          => $this->primaryKey(),
-                    'dateCreated' => $this->dateTime()->notNull(),
-                    'dateUpdated' => $this->dateTime()->notNull(),
-                    'uid'         => $this->uid(),
-                    'siteId'      => $this->integer()->notNull(),
-                    'userId'      => $this->integer()->null(),
-                    'orderId'     => $this->integer()->notNull(),
-                    'message'     => $this->text()->notNull(),
-                    'notify'     => $this->boolean()->defaultValue(0),
-                ]
-            );
+        if ($tableSchema !== null) {
+            return false;
         }
 
-        return $tablesCreated;
+        $this->createTable(
+            $this->tableName,
+            [
+                'id' => $this->primaryKey(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+                'siteId' => $this->integer()->notNull(),
+                'userId' => $this->integer()->null(),
+                'orderId' => $this->integer()->notNull(),
+                'message' => $this->text()->notNull(),
+                'notify' => $this->boolean()->defaultValue(false),
+            ]
+        );
+
+        return true;
     }
 
-    /**
-     * @return void
-     */
-    protected function createIndexes()
+    protected function createIndexes(): void
     {
         $this->createIndex(
-            $this->db->getIndexName(
-                $this->tableName,
-                'userId',
-                false
-            ),
+            null,
             $this->tableName,
             'userId',
             false
         );
 
         $this->createIndex(
-            $this->db->getIndexName(
-                $this->tableName,
-                'orderId',
-                false
-            ),
+            null,
             $this->tableName,
             'orderId',
             false
         );
-        // Additional commands depending on the db driver
-        switch ($this->driver) {
-            case DbConfig::DRIVER_MYSQL:
-                break;
-            case DbConfig::DRIVER_PGSQL:
-                break;
-        }
     }
 
-    /**
-     * @return void
-     */
-    protected function addForeignKeys()
+    protected function addForeignKeys(): void
     {
         $this->addForeignKey(
-            $this->db->getForeignKeyName($this->tableName, 'siteId'),
+            null,
             $this->tableName,
             'siteId',
             '{{%sites}}',
@@ -147,7 +95,7 @@ class Install extends Migration
         );
 
         $this->addForeignKey(
-            $this->db->getForeignKeyName($this->tableName, 'userId'),
+            null,
             $this->tableName,
             'userId',
             '{{%users}}',
@@ -157,7 +105,7 @@ class Install extends Migration
         );
 
         $this->addForeignKey(
-            $this->db->getForeignKeyName($this->tableName, 'orderId'),
+            null,
             $this->tableName,
             'orderId',
             '{{%commerce_orders}}',
@@ -165,20 +113,5 @@ class Install extends Migration
             'CASCADE',
             'CASCADE'
         );
-    }
-
-    /**
-     * @return void
-     */
-    protected function insertDefaultData()
-    {
-    }
-
-    /**
-     * @return void
-     */
-    protected function removeTables()
-    {
-        $this->dropTableIfExists($this->tableName);
     }
 }
